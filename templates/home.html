@@ -3,92 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block full_title %}{% block title %}Avisos{% endblock %} - Raco Test App{% endblock %}</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <meta name="viewport"
+          content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,width=device-width,height=device-height,target-densitydpi=device-dpi,user-scalable=yes"/>
+
 </head>
 <body>
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header">
-        <div class="mdl-layout__header-row">
-            <!-- Title -->
-            <span class="mdl-layout-title">{{ self.title() }}</span>
-            <!-- Add spacer, to align navigation to the right -->
-            <div class="mdl-layout-spacer"></div>
-            <!-- Navigation. We hide it in small screens. -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">{{ self.title() }}</a>
+        <ul class="nav navbar-nav navbar-right">
+
             {% if me %}
-                <nav class="mdl-navigation">
-                    <p class="mdl-navigation__link">Logged in as <b>{{ me.username }}</b></p>
-                    <a class="mdl-navigation__link" href="{{ url_for('logout') }}">Logout</a>
-                </nav>
+                <li><p class="navbar-text">Logged in as <b>{{ me.username }}</b></p></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
             {% else %}
-                <nav class="mdl-navigation">
-                    <a class="mdl-navigation__link" href="{{ url_for('login') }}">Login</a>
-                </nav>
+                <li><a href="{{ url_for('login') }}">Login</a></li>
             {% endif %}
-        </div>
-    </header>
-    <div class="mdl-layout__drawer">
-        {% if me %}
-            <span class="mdl-layout-title">Assignatures {{ me.nom }}</span>
-            <nav class="mdl-navigation">
-                <a class="mdl-navigation__link" href="{{ url_for('logout') }}">Logout</a>
-            </nav>
-        {% else %}
-            <span class="mdl-layout-title">Raco</span>
-            <nav class="mdl-navigation">
-                <a class="mdl-navigation__link" href="{{ url_for('login') }}">Login</a>
-            </nav>
-        {% endif %}
-
-
+        </ul>
     </div>
-    <main class="mdl-layout__content">
-        <div class="page-content ">
-            <div class="mdl-grid" style="max-width: 1200px">
-                {% for avis in avisos %}
-                    <div class="mdl-card mdl-cell--stretch
- mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-shadow--2dp">
-                        <div class="mdl-card__title mdl-card--expand">
+</nav>
+<div class="container" style="padding-top: 60px">
+    <div class="row">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="col-md-12">
+                        <div class="alert alert-success alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            {{ message }}</div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    <div class="row">
+        {% for avisos_sliced in avisos|slice(3) %}
+            <div class="col-md-4">
+                {% for avis in avisos_sliced %}
+                    <div class="panel panel-default">
+                        <div class="panel-body">
                             <h4>{{ avis.titol }}</h4>
+                            <p>{{ avis.text | safe }}</p>
                         </div>
-                        <div class="mdl-card__supporting-text">
-                            {{ avis.text | safe }}
-                        </div>
-                      <div class="mdl-card__actions mdl-card--border">
-                          <p>{{ avis.grup }}</p>
-                      </div>
+                        <div class="panel-footer">{{ avis.grup }}</div>
                     </div>
                 {% endfor %}
             </div>
-
-        </div>
-    </main>
-    <div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
-        <div class="mdl-snackbar__text"></div>
-        <button class="mdl-snackbar__action" type="button"></button>
-
+        {% endfor %}
     </div>
-    <script async=false defer=false src="https://code.getmdl.io/1.2.1/material.min.js"></script>
 
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-
-            <script>
-                {% for message in messages %}
-                    var exe = function () {
-
-                        var notification = document.querySelector('.mdl-js-snackbar');
-                        var message = '{{ message }}\n';
-                        var data = {message: message};
-                        notification.MaterialSnackbar.showSnackbar(data);
-                    };
-                    setTimeout(exe, 500);
-
-                {% endfor %}
-
-            </script>
-        {% endif %}
-    {% endwith %}
 
 </div>
 
