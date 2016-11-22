@@ -6,7 +6,7 @@ from flask_oauthlib.client import OAuth
 app = Flask(__name__)
 app.config.from_object('config')
 oauth = OAuth(app)
-app_url = 'http://localhost:8000/api/v2/'
+app_url = 'https://raco.fib.upc.edu/api/v2/'
 raco = oauth.remote_app(
     'raco',
     request_token_params={'scope': 'read'},
@@ -36,7 +36,7 @@ def index():
     if get_raco_token():
         avisos_resp = raco.get('me/avisos.json')
         if avisos_resp.status != 200:
-            flash('API Response: '+str(avisos_resp.status))
+            flash('API Response ('+str(avisos_resp.status)+'): '+ avisos_resp.data['detail'],category='danger')
         else:
             avisos = avisos_resp.data['results']
 
@@ -64,7 +64,7 @@ def authorized():
             resp
         ))
     else:
-        flash('Welcome back!')
+        flash('Welcome back!', category='success')
         session[token_key] = (resp['access_token'], '')
     return redirect(url_for('index'))
 
