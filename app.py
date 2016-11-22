@@ -1,33 +1,46 @@
 from flask import Flask, redirect, url_for, session, request, jsonify
+from flask import flash
 from flask import render_template
 from flask_oauthlib.client import OAuth
 
 app = Flask(__name__)
 app.config.from_object('config')
 oauth = OAuth(app)
-
+app_url = 'http://localhost:8000/api/v2/'
 raco = oauth.remote_app(
     'raco',
     request_token_params={'scope': 'read'},
-    base_url='https://raco.fib.upc.edu/api/v2/',
+    base_url=app_url,
     request_token_url=None,
     access_token_method='POST',
-    access_token_url='https://raco.fib.upc.edu/api/v2/o/token/',
-    authorize_url='https://raco.fib.upc.edu/api/v2/o/authorize/',
+    access_token_url=app_url + 'o/token/',
+    authorize_url=app_url + 'o/authorize/',
     app_key='RACO'
 )
 token_key = 'raco_token'
 
 
+def render_raco_template(template, **kwargs):
+    me = None
+    if get_raco_token():
+        me = raco.get('me.json')
+        me = me.data
+
+    kwargs.pop('me',None)
+    return render_template(template, me=me, **kwargs)
+
+
 @app.route('/')
 def index():
-    me = None
-    avisos = None
-    if token_key in session:
-        me = raco.get('me.json').data
-        avisos = raco.get('me/avisos.json').data['results']
+    avisos = []
+    if get_raco_token():
+        avisos_resp = raco.get('me/avisos.json')
+        if avisos_resp.status != 200:
+            flash('API Response: '+str(avisos_resp.status))
+        else:
+            avisos = avisos_resp.data['results']
 
-    return render_template('home.html', me=me, avisos=avisos)
+    return render_raco_template('home.html', avisos=avisos)
 
 
 @app.route('/login')
@@ -45,14 +58,15 @@ def logout():
 def authorized():
     resp = raco.authorized_response()
     if resp is None or resp.get('access_token') is None:
-        return 'Access denied: reason=%s error=%s resp=%s' % (
+        flash( 'Access denied: reason=%s error=%s resp=%s' % (
             request.args['error'],
             request.args['error_description'],
             resp
-        )
-    session[token_key] = (resp['access_token'], '')
-    me = raco.get('me.json')
-    return jsonify(me.data)
+        ))
+    else:
+        flash('Welcome back!')
+        session[token_key] = (resp['access_token'], '')
+    return redirect(url_for('index'))
 
 
 @raco.tokengetter
