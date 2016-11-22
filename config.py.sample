@@ -1,0 +1,10 @@
+
+# Set this to True if going to production
+DEBUG = True
+
+# App credentials lazy load configuration
+# Read: https://flask-oauthlib.readthedocs.io/en/latest/client.html#lazy-configuration
+RACO = {
+    'consumer_key': 'REPLACE WITH YOUR CLIENT ID HERE',
+    'consumer_secret': 'REPLACE WITH YOUR CLIENT SECRET HERE'
+}
