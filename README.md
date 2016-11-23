@@ -2,7 +2,7 @@
 
 ## Install
 
-Requirements `python 2.7`.
+Requirements `python 2.7` or `python 3.5`.
 ```
 pip install -r requirements.txt
 ```
