@@ -1,1 +1,1 @@
-# Exemple ús API RACO
+# API 2.0 RACO - Exemple Python
