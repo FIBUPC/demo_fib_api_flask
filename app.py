@@ -26,7 +26,7 @@ def render_raco_template(template, **kwargs):
         me = raco.get('me.json')
         me = me.data
 
-    kwargs.pop('me',None)
+    kwargs.pop('me', None)
     return render_template(template, me=me, **kwargs)
 
 
@@ -36,7 +36,7 @@ def index():
     if get_raco_token():
         avisos_resp = raco.get('me/avisos.json')
         if avisos_resp.status != 200:
-            flash('API Response ('+str(avisos_resp.status)+'): '+ avisos_resp.data['detail'],category='danger')
+            flash('API Response (' + str(avisos_resp.status) + '): ' + avisos_resp.data['detail'], category='danger')
         else:
             avisos = avisos_resp.data['results']
 
@@ -45,7 +45,7 @@ def index():
 
 @app.route('/login')
 def login():
-    return raco.authorize(callback=url_for('authorized', _external=True))
+    return raco.authorize(callback=url_for('authorized', _external=True), approval_prompt='auto')
 
 
 @app.route('/logout')
@@ -58,7 +58,7 @@ def logout():
 def authorized():
     resp = raco.authorized_response()
     if resp is None or resp.get('access_token') is None:
-        flash( 'Access denied: reason=%s error=%s resp=%s' % (
+        flash('Access denied: reason=%s error=%s resp=%s' % (
             request.args['error'],
             request.args['error_description'],
             resp
