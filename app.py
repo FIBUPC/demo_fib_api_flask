@@ -20,10 +20,15 @@ raco = oauth.remote_app(
 token_key = 'raco_token'
 
 
+def get_urls():
+    return raco.get('', headers={'Accept': 'application/json'}).data
+
+
 def render_raco_template(template, **kwargs):
     me = None
     if get_raco_token():
-        me = raco.get('me.json')
+        urls = get_urls()
+        me = raco.get(urls['privat']['jo'], headers={'Accept': 'application/json'})
         me = me.data
 
     kwargs.pop('me', None)
@@ -34,7 +39,8 @@ def render_raco_template(template, **kwargs):
 def index():
     avisos = []
     if get_raco_token():
-        avisos_resp = raco.get('me/avisos.json')
+        urls = get_urls()
+        avisos_resp = raco.get(urls['privat']['avisos'], headers={'Accept': 'application/json'})
         if avisos_resp.status != 200:
             flash('API Response (' + str(avisos_resp.status) + '): ' + avisos_resp.data['detail'], category='danger')
         else:
