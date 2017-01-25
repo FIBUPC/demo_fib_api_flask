@@ -6,7 +6,7 @@ from flask_oauthlib.client import OAuth
 app = Flask(__name__)
 app.config.from_object('config')
 oauth = OAuth(app)
-app_url = 'http://api.fib.upc.edu/v2/'
+app_url = 'https://api.fib.upc.edu/v2/'
 raco = oauth.remote_app(
     'raco',
     request_token_params={'scope': 'read'},
