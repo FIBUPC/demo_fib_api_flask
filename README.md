@@ -9,8 +9,8 @@ pip install -r requirements.txt
 
 ## Configuration
 
-- Copy `config.py.sample` to `config.py`: `mv config.py.sample config.py`
-- Create Raco API Application [here](https://raco.fib.upc.edu/api/v2/o/applications/register/)
+- Copy `config.py.sample` to `config.py`: `cp config.py.sample config.py`
+- Create Raco API Application [here](https://api.fib.upc.edu/v2/o/applications/register/), with redirect url `http://localhost:5001/login/authorized` (or whatever url your server is running in)
 - Replace _client secret_ and _client id_ in `config.py`
 
 ### Production
