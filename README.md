@@ -1,4 +1,4 @@
-# RACO API 2.0 - Python example
+# FIB API 2.0 - Flask example
 
 ## Install
 
@@ -28,3 +28,8 @@ os.urandom(24)
 You can easily start the server with `python app.py`.
 
 In production, you should use something like [Gunicorn](http://gunicorn.org/) to serve this. You can run the app with `gunicorn -b :<PORT> -w <number of workers> wsgi`.
+
+
+------------------
+
+Made with <3 in Barcelona
