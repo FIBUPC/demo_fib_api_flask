@@ -7,8 +7,8 @@ app = Flask(__name__)
 app.config.from_object('config')
 oauth = OAuth(app)
 app_url = 'https://api.fib.upc.edu/v2/'
-raco = oauth.remote_app(
-    'raco',
+fib = oauth.remote_app(
+    'fib',
     request_token_params={'scope': 'read'},
     base_url=app_url,
     request_token_url=None,
@@ -17,18 +17,18 @@ raco = oauth.remote_app(
     authorize_url=app_url + 'o/authorize/',
     app_key='RACO'
 )
-token_key = 'raco_token'
+token_key = 'api_token'
 
 
 def get_urls():
-    return raco.get('', headers={'Accept': 'application/json'}).data
+    return fib.get('', headers={'Accept': 'application/json'}).data
 
 
 def render_raco_template(template, **kwargs):
     me = None
     if get_raco_token():
         urls = get_urls()
-        me = raco.get(urls['privat']['jo'], headers={'Accept': 'application/json'})
+        me = fib.get(urls['privat']['jo'], headers={'Accept': 'application/json'})
         me = me.data
 
     kwargs.pop('me', None)
@@ -40,7 +40,7 @@ def index():
     avisos = []
     if get_raco_token():
         urls = get_urls()
-        avisos_resp = raco.get(urls['privat']['avisos'], headers={'Accept': 'application/json'})
+        avisos_resp = fib.get(urls['privat']['avisos'], headers={'Accept': 'application/json'})
         if avisos_resp.status != 200:
             flash('API Response (' + str(avisos_resp.status) + '): ' + avisos_resp.data['detail'], category='danger')
         else:
@@ -51,7 +51,7 @@ def index():
 
 @app.route('/login')
 def login():
-    return raco.authorize(callback=url_for('authorized', _external=True), approval_prompt='auto')
+    return fib.authorize(callback=url_for('authorized', _external=True), approval_prompt='auto')
 
 
 @app.route('/logout')
@@ -62,7 +62,7 @@ def logout():
 
 @app.route('/login/authorized')
 def authorized():
-    resp = raco.authorized_response()
+    resp = fib.authorized_response()
     if resp is None or resp.get('access_token') is None:
         flash('Access denied: reason=%s error=%s resp=%s' % (
             request.args['error'],
@@ -75,7 +75,7 @@ def authorized():
     return redirect(url_for('index'))
 
 
-@raco.tokengetter
+@fib.tokengetter
 def get_raco_token():
     return session.get(token_key)
 
