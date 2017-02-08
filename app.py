@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, session, request, jsonify
+from flask import Flask, redirect, url_for, session, request
 from flask import flash
 from flask import render_template
 from flask_oauthlib.client import OAuth
@@ -45,8 +45,18 @@ def index():
             flash('API Response (' + str(avisos_resp.status) + '): ' + avisos_resp.data['detail'], category='danger')
         else:
             avisos = avisos_resp.data['results']
+    return render_raco_template('home.html', avisos=avisos,)
 
-    return render_raco_template('home.html', avisos=avisos)
+
+@app.route('/foto')
+def foto():
+    if get_raco_token():
+        urls = get_urls()
+        photo_url = raco.get(urls['privat']['foto'], headers={'Accept': 'application/json'})
+        photo_url = photo_url.data['foto']
+        photo = raco.get(photo_url)
+        photo = photo.data
+    return app.response_class(photo, mimetype='image/jpg')
 
 
 @app.route('/login')
