@@ -52,9 +52,9 @@ def index():
 def foto():
     if get_raco_token():
         urls = get_urls()
-        photo_url = raco.get(urls['privat']['foto'], headers={'Accept': 'application/json'})
+        photo_url = fib.get(urls['privat']['foto'], headers={'Accept': 'application/json'})
         photo_url = photo_url.data['foto']
-        photo = raco.get(photo_url)
+        photo = fib.get(photo_url)
         photo = photo.data
     return app.response_class(photo, mimetype='image/jpg')
 
