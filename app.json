@@ -1,0 +1,16 @@
+{
+    "description": "OAuth 2.0 example usage for FIB API",
+    "logo": "https://api.fib.upc.edu/static/img/Logo_FIB.gif",
+    "env": {
+        "consumer_key": "change-this-to-your-app-client-key",
+        "consumer_secret": "change-this-to-your-app-client-secret",
+        "secret_key": "randomly-generate-this-before-deploying"
+    },
+    "keywords": [
+        "oauth2.0",
+	"api",
+        "python",
+        "flask"
+    ],
+    "name": "FIB API 2.0 - Flask example"
+}
