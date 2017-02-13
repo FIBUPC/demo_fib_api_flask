@@ -1,5 +1,7 @@
 import os
 
+# Config file for Heroky environment. This binds variables to environment variables in order to make Heroku deployment easier.
+
 # Set this to False if going to production
 DEBUG = False
 
