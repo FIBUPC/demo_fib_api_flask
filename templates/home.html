@@ -39,7 +39,7 @@
             <ul class="nav navbar-nav navbar-right">
 
                 {% if me %}
-                    <li><img src="{{ url_for('foto') }}" style="height:50px; display: block; padding: 5px "></li>
+                    <li><img src="{{ url_for('photo') }}" style="height:50px; display: block; padding: 5px "></li>
                     <li class="hidden-xs hidden-sm"><p class="navbar-text"><b>{{ me.username }}</b></p></li>
                     <li><a href="{{ url_for('logout') }}">Logout</a></li>
                 {% else %}

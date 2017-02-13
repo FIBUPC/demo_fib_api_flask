@@ -48,8 +48,8 @@ def index():
     return render_raco_template('home.html', avisos=avisos,)
 
 
-@app.route('/foto')
-def foto():
+@app.route('/photo')
+def photo():
     if get_raco_token():
         urls = get_urls()
         photo_url = fib.get(urls['privat']['foto'], headers={'Accept': 'application/json'})
@@ -91,4 +91,4 @@ def get_raco_token():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=5001)
+    app.run(port=5001)
