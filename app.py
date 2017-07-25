@@ -2,14 +2,22 @@ from flask import Flask, redirect, url_for, session, request
 from flask import flash
 from flask import render_template
 from flask_oauthlib.client import OAuth
+from werkzeug import security
 
 app = Flask(__name__)
 app.config.from_object('config')
 oauth = OAuth(app)
 app_url = 'https://api.fib.upc.edu/v2/'
+
+
+def get_random_state():
+    return security.gen_salt(16)
+
+
+state = get_random_state()
 fib = oauth.remote_app(
     'fib',
-    request_token_params={'scope': 'read'},
+    request_token_params={'scope': 'read', 'state': state},
     base_url=app_url,
     request_token_url=None,
     access_token_method='POST',
@@ -45,7 +53,7 @@ def index():
             flash('API Response (' + str(avisos_resp.status) + '): ' + avisos_resp.data['detail'], category='danger')
         else:
             avisos = avisos_resp.data['results']
-    return render_raco_template('home.html', avisos=avisos,)
+    return render_raco_template('home.html', avisos=avisos, )
 
 
 @app.route('/photo')
@@ -73,7 +81,8 @@ def logout():
 @app.route('/login/authorized')
 def authorized():
     resp = fib.authorized_response()
-    if resp is None or resp.get('access_token') is None:
+    received_state = request.args['state']
+    if resp is None or resp.get('access_token') is None or received_state is None or received_state != state:
         flash('Access denied: reason=%s error=%s resp=%s' % (
             request.args['error'],
             request.args['error_description'],
