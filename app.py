@@ -11,7 +11,6 @@ oauth = OAuth(app)
 app_url = 'https://api.fib.upc.edu/v2/'
 token_key = 'api_token'
 
-# Registro moderno con Authlib
 oauth.register(
     name='fib',
     client_id=app.config['RACO']['consumer_key'],
@@ -23,14 +22,12 @@ oauth.register(
     fetch_token=lambda: session.get(token_key)
 )
 
-
 def get_urls():
     resp = oauth.fib.get('', headers={'Accept': 'application/json'})
     data = resp.json()
     if 'privat' not in data:
         print(f"DEBUG: API Root Response: {data}")
     return data
-
 
 def render_raco_template(template, **kwargs):
     me = None
@@ -40,7 +37,6 @@ def render_raco_template(template, **kwargs):
 
     kwargs.pop('me', None)
     return render_template(template, me=me, **kwargs)
-
 
 @app.route('/')
 def index():
@@ -58,7 +54,6 @@ def index():
             session.pop(token_key, None)
     return render_raco_template('home.html', avisos=avisos)
 
-
 @app.route('/photo')
 def photo():
     if session.get(token_key):
@@ -68,12 +63,10 @@ def photo():
         return app.response_class(photo_data, mimetype='image/jpg')
     return "Unauthorized", 401
 
-
 @app.route('/login')
 def login():
     redirect_uri = url_for('authorized', _external=True)
     return oauth.fib.authorize_redirect(redirect_uri)
-
 
 @app.route('/login/authorized')
 def authorized():
@@ -83,12 +76,10 @@ def authorized():
         flash('Welcome back!', category='success')
     return redirect(url_for('index'))
 
-
 @app.route('/logout')
 def logout():
     session.pop(token_key, None)
     return redirect(url_for('index'))
-
 
 if __name__ == '__main__':
     app.run(port=5001)
