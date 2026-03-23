@@ -1,11 +1,6 @@
-click==6.6
-Flask==1.0.0
-Flask-OAuthlib==0.9.3
-itsdangerous==0.24
-Jinja2==2.10.1
-MarkupSafe==0.23
-oauthlib==2.0.0
-requests==2.20.0
-requests-oauthlib==0.7.0
-Werkzeug==0.15.3
+Flask
+Werkzeug
+Authlib
 gunicorn
+requests
+python-dotenv
